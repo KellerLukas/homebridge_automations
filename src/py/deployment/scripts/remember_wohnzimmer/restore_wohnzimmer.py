@@ -5,6 +5,7 @@ def main():
     rem_states = RememberStates.from_file(memory_file)
     print(rem_states.states)
     rem_states.restore()
+    os.remove(memory_file)
 
 if __name__ == "__main__":
     main()
