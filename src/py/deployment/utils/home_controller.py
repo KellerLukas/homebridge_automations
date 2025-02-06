@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from phue import Bridge
 
 CONFIGURABLE_PARAMETERS = ["on", "bri", "sat", "ct"]
@@ -13,5 +13,5 @@ class HomeController:
         state = {key:val for key,val in state.items() if key in CONFIGURABLE_PARAMETERS}
         return state
         
-    def set_state(self, light_id: str, state: Dict[str,str]):
-        self.bridge.set_light(light_id=light_id, parameter=state)
+    def set_state(self, light_id: str, state: Dict[str,str], transitiontime: Optional[int]=None):
+        self.bridge.set_light(light_id=light_id, parameter=state, transitiontime=transitiontime)

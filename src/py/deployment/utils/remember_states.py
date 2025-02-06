@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import List, Optional
 
 from src.py.deployment.utils.home_controller import HomeController
 from src.py.deployment.utils.config import HUE_BRIDGE_IP
@@ -28,6 +28,6 @@ class RememberStates:
         for id in self.light_ids:
             self.states[id] = self.controller.get_state(light_id=id)
     
-    def restore(self):
+    def restore(self, transitiontime: Optional[int]=None):
         for id in self.light_ids:
-            self.controller.set_state(light_id=id, state=self.states[id])
+            self.controller.set_state(light_id=id, state=self.states[id], transitiontime=transitiontime)
