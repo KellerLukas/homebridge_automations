@@ -7,7 +7,7 @@ def main():
     rem_states = RememberStates(light_ids=light_ids)
     rem_states.record()
     rem_states.to_file(memory_file)
-    rem_states.controller.set_state(light_id=id, state=target_states, transitiontime=50)
+    rem_states.set_states(states=target_states, transitiontime=60)
     
 if __name__ == "__main__":
     main()

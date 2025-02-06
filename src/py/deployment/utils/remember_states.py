@@ -31,3 +31,7 @@ class RememberStates:
     def restore(self, transitiontime: Optional[int]=None):
         for id in self.light_ids:
             self.controller.set_state(light_id=id, state=self.states[id], transitiontime=transitiontime)
+            
+    def set_states(self, states: {}, transitiontime: Optional[int]):
+        for id in self.light_ids:
+            self.controller.set_state(light_id=id, state=states[id], transitiontime=transitiontime)
