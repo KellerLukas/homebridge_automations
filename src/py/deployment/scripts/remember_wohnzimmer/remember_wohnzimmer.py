@@ -7,7 +7,14 @@ def main():
     rem_states = RememberStates(light_ids=light_ids)
     rem_states.record()
     rem_states.to_file(memory_file)
-    rem_states.set_states(states=target_states, transitiontime=60)
+    if not all_turned_off(rem_states.states):
+        rem_states.set_states(states=target_states, transitiontime=60)
     
+def all_turned_off(states: dict) -> bool:
+    for state in states.values():
+        if state["on"]:
+            return False
+    return True
+
 if __name__ == "__main__":
     main()
