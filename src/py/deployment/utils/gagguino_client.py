@@ -1,12 +1,12 @@
 import requests
-from enum import StrEnum
+from enum import Enum
 from typing import Dict, Optional
 
 # https://gaggiuino.github.io/#/rest-api/rest-api
 
 URL = "http://gaggiuino.local"
 
-class GaggiuinoStatusKeys(StrEnum):
+class GaggiuinoStatusKeys(Enum):
     uptime = "upTime"
     profile_id = "profileId"
     profile_name = "profileName"
@@ -28,9 +28,9 @@ class GaggiuinoClient:
     
     def is_brewing(self, status: Optional[dict] = None) -> bool:
         status = status or self.get_status()
-        return status[GaggiuinoStatusKeys.brew_switch_state] == "true"
+        return status[GaggiuinoStatusKeys.brew_switch_state.value] == "true"
     
     def get_uptime(self, status: Optional[dict] = None) -> int:
         status = status or self.get_status()
-        return int(status[GaggiuinoStatusKeys.uptime])
+        return int(status[GaggiuinoStatusKeys.uptime.value])
     
