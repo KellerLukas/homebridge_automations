@@ -1,6 +1,6 @@
 import time
 
-from src.py.deployment.utils.gagguino_client import GaggiuinoClient
+from src.py.deployment.utils.gaggiuino_client import GaggiuinoClient
 from src.py.deployment.utils.home_controller import HomeController
 from src.py.deployment.utils.config import HUE_BRIDGE_IP
 from src.py.deployment.utils.pushcut import Pushcut
