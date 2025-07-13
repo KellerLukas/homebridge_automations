@@ -7,7 +7,7 @@ from src.py.deployment.utils.pushcut import Pushcut
 
 # THIS RUNS AS A CRON JOB EVERY 5 MINUTES AND NOT THROUGH HOMEBRIDGE
 
-SHUT_OFF_AFTER_SECONDS = 1  # testing
+SHUT_OFF_AFTER_SECONDS = 30 * 60  # 30 minutes
 
 def main():
     home_controller = HomeController(HUE_BRIDGE_IP)
