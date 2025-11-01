@@ -24,9 +24,10 @@ class RememberStates:
     def from_file(cls, filename: str):
         with open(filename, "r") as f:
             states = json.load(f)
+        timestamp = states.pop(TIMESTAMP_KEY, None)
         ids = list(states.keys())
         rem_states = cls(ids)
-        rem_states.timestamp = states.pop(TIMESTAMP_KEY, None)
+        rem_states.timestamp = timestamp
         rem_states.states.update(states)
         return rem_states
     
@@ -36,7 +37,7 @@ class RememberStates:
             dump[TIMESTAMP_KEY] = self.timestamp
             json.dump(dump, f)
     
-    @classmethod
+    @staticmethod
     def file_exists(filename: str) -> bool:
         try:
             with open(filename, "r"):
