@@ -744,6 +744,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "discoverhue" },
     { name = "phue" },
+    { name = "requests" },
 ]
 
 [package.dev-dependencies]
@@ -757,6 +758,7 @@ dev = [
 requires-dist = [
     { name = "discoverhue" },
     { name = "phue" },
+    { name = "requests", specifier = ">=2.32.5" },
 ]
 
 [package.metadata.requires-dev]
