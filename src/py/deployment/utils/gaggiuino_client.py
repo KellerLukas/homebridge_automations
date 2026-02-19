@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 URL = "http://gaggiuino.local"
 
+
 class GaggiuinoStatusKeys(Enum):
     uptime = "upTime"
     profile_id = "profileId"
@@ -18,6 +19,7 @@ class GaggiuinoStatusKeys(Enum):
     brew_switch_state = "brewSwitchState"
     steam_switch_state = "steamSwitchState"
 
+
 class GaggiuinoClient:
     def get_status(self) -> Dict[str, str]:
         response = requests.get(f"{URL}/api/system/status")
@@ -25,12 +27,11 @@ class GaggiuinoClient:
         if isinstance(res, list):
             return res[0]
         return res
-    
+
     def is_brewing(self, status: Optional[dict] = None) -> bool:
         status = status or self.get_status()
         return status[GaggiuinoStatusKeys.brew_switch_state.value] == "true"
-    
+
     def get_uptime(self, status: Optional[dict] = None) -> int:
-        status = status or self.get_status() 
+        status = status or self.get_status()
         return int(status[GaggiuinoStatusKeys.uptime.value])
-    

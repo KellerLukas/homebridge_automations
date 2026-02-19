@@ -1,20 +1,23 @@
-[tool.poetry]
-name = "qr_bill"
+[project]
+name = "homebridge_automations"
 version = "0.0.1"
-description = "Create qr bills"
-package-mode = false
-authors = []
+description = "Homebridge automations"
+requires-python = ">=3.10"
+dependencies = [
+    "phue",
+    "discoverhue",
+]
 
-# Requirements
-[tool.poetry.dependencies]
-python = "^3.13"
-phue = "*"
-discoverhue = "*"
+[dependency-groups]
+dev = [
+    "pytest",
+    "jupyter",
+    "ruff",
+]
 
-[tool.poetry.group.test.dependencies]
-pytest = "*"
-jupyter = "*"
-ruff = "*"
+[tool.uv]
+package = false
+default-groups = ["dev"]
 
 [tool.mypy]
 files = "src, tests"

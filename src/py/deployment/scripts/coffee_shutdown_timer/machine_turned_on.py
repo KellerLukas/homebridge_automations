@@ -9,6 +9,7 @@ from src.py.deployment.utils.pushcut import Pushcut
 
 SHUT_OFF_AFTER_SECONDS = 30 * 60  # 30 minutes
 
+
 def main():
     home_controller = HomeController(HUE_BRIDGE_IP)
     for i in range(2):
@@ -22,21 +23,24 @@ def main():
             title="Kaffeemaschine",
             message="Kaffeemaschine ausgeschaltet",
         )
-    
-def turned_on_has_exceeded_runtime_and_not_brewing(home_controller: HomeController) -> bool:
+
+
+def turned_on_has_exceeded_runtime_and_not_brewing(
+    home_controller: HomeController,
+) -> bool:
     client = GaggiuinoClient()
     if not home_controller.get_state("Kaffeemaschine")["on"]:
         return False
     status = safely_get_status(client)
     uptime = client.get_uptime(status)
-    
+
     if uptime < SHUT_OFF_AFTER_SECONDS:
         return False
     if client.is_brewing(status):
         return False
     return True
-    
-    
+
+
 def safely_get_status(client: GaggiuinoClient):
     for iteration in range(2):
         try:
@@ -46,6 +50,7 @@ def safely_get_status(client: GaggiuinoClient):
                 raise e
             # possibly still booting, wait and retry
             time.sleep(8)
+
 
 if __name__ == "__main__":
     main()
