@@ -1,42 +1,45 @@
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional, Union
 import json
 import time
-from typing import List, Optional
 
 from src.py.deployment.utils.home_controller import HomeController
 from src.py.deployment.utils.config import HUE_BRIDGE_IP
 
-TIMESTAMP_KEY = "timestamp"
-
+@dataclass
 class RememberStates:
-    def __init__(self, light_ids: List[str]):
-        self.light_ids = light_ids
-        self.states = {}
-        self.timestamp = None
-        self.controller = HomeController(HUE_BRIDGE_IP)
-
+    light_ids: List[str]
+    states: Dict[str, Dict[str, Union[bool, int, float]]] = field(default_factory=dict)
+    recorded_at: Optional[float] = None
+    valid_until: Optional[float] = None
+    controller: HomeController = HomeController(HUE_BRIDGE_IP)
+        
     @property
-    def age(self) -> Optional[float]:
-        if self.timestamp is None:
+    def age_of_recording(self) -> Optional[float]:
+        if self.recorded_at is None:
             return None
-        return time.time() - self.timestamp
-
-    @classmethod
-    def from_file(cls, filename: str):
-        with open(filename, "r") as f:
-            states = json.load(f)
-        timestamp = states.pop(TIMESTAMP_KEY, None)
-        ids = list(states.keys())
-        rem_states = cls(ids)
-        rem_states.timestamp = timestamp
-        rem_states.states.update(states)
-        return rem_states
+        return time.time() - self.recorded_at
+    
+    @property
+    def is_valid(self) -> bool:
+        if self.recorded_at is None:
+            return False
+        if self.valid_until is None:
+            return True
+        return time.time() < self.valid_until
 
     def to_file(self, filename: str):
         with open(filename, "w") as f:
-            dump = self.states.copy()
-            dump[TIMESTAMP_KEY] = self.timestamp
-            json.dump(dump, f)
-
+            # Exclude non-serializable controller field
+            data = {k: v for k, v in self.__dict__.items() if k != "controller"}
+            json.dump(data, f)
+    
+    @classmethod
+    def from_file(cls, filename: str) -> "RememberStates":
+        with open(filename, "r") as f:
+            data = json.load(f)
+        return cls(**data)
+    
     @staticmethod
     def file_exists(filename: str) -> bool:
         try:
@@ -48,16 +51,17 @@ class RememberStates:
     def record(self):
         for id in self.light_ids:
             self.states[id] = self.controller.get_state(light_id=id)
-            self.timestamp = time.time()
+            self.recorded_at = time.time()
 
-    def restore(self, transition_time: Optional[int] = None):
+    def restore(self, transition_time_deciseconds: Optional[int] = None):
         for id in self.light_ids:
             self.controller.set_state(
-                light_id=id, state=self.states[id], transition_time=transition_time
+                light_id=id, state=self.states[id], transition_time_deciseconds=transition_time_deciseconds
             )
+        self.valid_until = time.time() + transition_time_deciseconds/10 if transition_time_deciseconds else time.time()
 
-    def set_states(self, states: {}, transition_time: Optional[int]):
+    def set_states(self, states: {}, transition_time_decisenconds: Optional[int]):
         for id in self.light_ids:
             self.controller.set_state(
-                light_id=id, state=states[id], transition_time=transition_time
+                light_id=id, state=states[id], transition_time_deciseconds=transition_time_decisenconds
             )

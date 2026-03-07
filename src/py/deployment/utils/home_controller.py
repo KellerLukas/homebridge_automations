@@ -18,10 +18,10 @@ class HomeController:
         return state
 
     def set_state(
-        self, light_id: str, state: Dict[str, str], transition_time: Optional[int] = None
+        self, light_id: str, state: Dict[str, str], transition_time_deciseconds: Optional[int] = None
     ):
         self.bridge.set_light(
-            light_id=light_id, parameter=state, transitiontime=transition_time
+            light_id=light_id, parameter=state, transitiontime=transition_time_deciseconds
         )
 
     def blink_light(self, light_id: str, count: int, delay: int):
@@ -32,8 +32,8 @@ class HomeController:
         self.set_state(light_id, state_off)
         for _ in range(count):
             time.sleep(delay)
-            self.set_state(light_id, state=state_on, transition_time=0)
+            self.set_state(light_id, state=state_on, transition_time_deciseconds=0)
             time.sleep(delay)
-            self.set_state(light_id, state=state_off, transition_time=0)
+            self.set_state(light_id, state=state_off, transition_time_deciseconds=0)
         time.sleep(delay)
         self.set_state(light_id, previous_state)
