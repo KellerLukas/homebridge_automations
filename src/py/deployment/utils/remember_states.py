@@ -7,7 +7,6 @@ from src.py.deployment.utils.config import HUE_BRIDGE_IP
 
 TIMESTAMP_KEY = "timestamp"
 
-
 class RememberStates:
     def __init__(self, light_ids: List[str]):
         self.light_ids = light_ids
@@ -51,14 +50,14 @@ class RememberStates:
             self.states[id] = self.controller.get_state(light_id=id)
             self.timestamp = time.time()
 
-    def restore(self, transitiontime: Optional[int] = None):
+    def restore(self, transition_time: Optional[int] = None):
         for id in self.light_ids:
             self.controller.set_state(
-                light_id=id, state=self.states[id], transitiontime=transitiontime
+                light_id=id, state=self.states[id], transition_time=transition_time
             )
 
-    def set_states(self, states: {}, transitiontime: Optional[int]):
+    def set_states(self, states: {}, transition_time: Optional[int]):
         for id in self.light_ids:
             self.controller.set_state(
-                light_id=id, state=states[id], transitiontime=transitiontime
+                light_id=id, state=states[id], transition_time=transition_time
             )
