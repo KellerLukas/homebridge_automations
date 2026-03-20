@@ -12,20 +12,24 @@ SHUT_OFF_AFTER_SECONDS = 30 * 60  # 30 minutes
 
 def main():
     home_controller = HomeController(HUE_BRIDGE_IP)
-    for i in range(2):
-        if not turned_on_has_exceeded_runtime_and_not_brewing(home_controller):
+    blink_loops = 2
+    for i in range(blink_loops + 1):
+        if not (
+            has_exceeded_runtime_and_not_brewing(home_controller)
+            or has_exceeded_runtime_by_very_much(home_controller)
+        ):
             return
+        if i == blink_loops:
+            home_controller.set_state("Kaffeemaschine", {"on": False})
+            Pushcut().send_notification(
+                title="Kaffeemaschine",
+                message="Kaffeemaschine ausgeschaltet",
+            )
         home_controller.blink_light("Esstisch", count=3, delay=0.5)
         time.sleep(5)
-    if turned_on_has_exceeded_runtime_and_not_brewing(home_controller):
-        home_controller.set_state("Kaffeemaschine", {"on": False})
-        Pushcut().send_notification(
-            title="Kaffeemaschine",
-            message="Kaffeemaschine ausgeschaltet",
-        )
 
 
-def turned_on_has_exceeded_runtime_and_not_brewing(
+def has_exceeded_runtime_and_not_brewing(
     home_controller: HomeController,
 ) -> bool:
     client = GaggiuinoClient()
@@ -37,6 +41,21 @@ def turned_on_has_exceeded_runtime_and_not_brewing(
     if uptime < SHUT_OFF_AFTER_SECONDS:
         return False
     if client.is_brewing(status):
+        return False
+    return True
+
+
+def has_exceeded_runtime_by_very_much(
+    home_controller: HomeController,
+) -> bool:
+    # if the machine is on for a very long time, we want to shut it off even if it is brewing, we might have forgotten to turn off the brew switch
+    client = GaggiuinoClient()
+    if not home_controller.get_state("Kaffeemaschine")["on"]:
+        return False
+    status = safely_get_status(client)
+    uptime = client.get_uptime(status)
+
+    if uptime < SHUT_OFF_AFTER_SECONDS * 2:
         return False
     return True
 

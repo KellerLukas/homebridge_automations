@@ -30,7 +30,7 @@ class GaggiuinoClient:
 
     def is_brewing(self, status: Optional[dict] = None) -> bool:
         status = status or self.get_status()
-        return status[GaggiuinoStatusKeys.brew_switch_state.value] == "true"
+        return status[GaggiuinoStatusKeys.brew_switch_state.value]
 
     def get_uptime(self, status: Optional[dict] = None) -> int:
         status = status or self.get_status()

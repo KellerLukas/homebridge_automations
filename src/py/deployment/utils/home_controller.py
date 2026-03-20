@@ -18,10 +18,15 @@ class HomeController:
         return state
 
     def set_state(
-        self, light_id: str, state: Dict[str, str], transition_time_deciseconds: Optional[int] = None
+        self,
+        light_id: str,
+        state: Dict[str, str],
+        transition_time_deciseconds: Optional[int] = None,
     ):
         self.bridge.set_light(
-            light_id=light_id, parameter=state, transitiontime=transition_time_deciseconds
+            light_id=light_id,
+            parameter=state,
+            transitiontime=transition_time_deciseconds,
         )
 
     def blink_light(self, light_id: str, count: int, delay: int):
