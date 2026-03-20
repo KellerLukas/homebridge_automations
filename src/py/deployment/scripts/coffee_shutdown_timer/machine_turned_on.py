@@ -19,7 +19,7 @@ def main():
             or has_exceeded_runtime_by_very_much(home_controller)
         ):
             return
-        if i == blink_loops:
+        if i >= blink_loops:
             home_controller.set_state("Kaffeemaschine", {"on": False})
             Pushcut().send_notification(
                 title="Kaffeemaschine",
