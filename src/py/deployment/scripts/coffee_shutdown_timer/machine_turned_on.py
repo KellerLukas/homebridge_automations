@@ -65,7 +65,7 @@ def safely_get_status(client: GaggiuinoClient):
         try:
             return client.get_status()
         except ConnectionError as e:
-            if iteration == 1:
+            if iteration >= 1:
                 raise e
             # possibly still booting, wait and retry
             time.sleep(8)
